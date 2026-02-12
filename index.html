@@ -65,7 +65,7 @@
                         <input type="file" id="db-upload" onchange="loadDatabase(this)" style="display: none;">
                     </label>
                 </div>
-                <button id="btn-load-demo" class="primary-btn" style="margin-top: 10px;">
+                <button id="btn-load-demo" class="primary-btn" style="margin-top: 10px;" onclick="loadDemoData()">
                     <i class="fas fa-rotate-right"></i> Resetuj / Demo Podaci
                 </button>
             </div>
@@ -73,28 +73,91 @@
 
         <div id="tab-docs" class="tab-content">
             <div class="docs-container">
+                
                 <div class="doc-header">I. OSNOVE (CRUD)</div>
+                
                 <div class="doc-block">
-                    <h3>SELECT</h3>
+                    <h3>SELECT (Čitanje)</h3>
                     <p>Prikazuje sve kolone iz tabele.</p>
                     <code>SELECT * FROM studenti;</code>
+                    <p>Prikazuje samo specifične kolone.</p>
+                    <code>SELECT ime, prezime FROM studenti;</code>
                 </div>
+                
                 <div class="doc-block">
-                    <h3>INSERT</h3>
-                    <p>Dodavanje novog reda.</p>
-                    <code>INSERT INTO studenti VALUES (1, 'Marko');</code>
+                    <h3>INSERT (Unos)</h3>
+                    <p>Dodavanje novog studenta.</p>
+                    <code>INSERT INTO studenti (id, ime, prezime, grad) VALUES (5, 'Vuk', 'Vukovic', 'Kragujevac');</code>
                 </div>
+
                 <div class="doc-block">
-                    <h3>CREATE</h3>
-                    <p>Pravljenje nove tabele.</p>
-                    <code>CREATE TABLE x (id INTEGER, naziv TEXT);</code>
+                    <h3>UPDATE (Izmena)</h3>
+                    <p>Menja podatke (npr. grad) za određenog studenta.</p>
+                    <code>UPDATE studenti SET grad = 'Subotica' WHERE ime = 'Marko';</code>
                 </div>
-                <div class="doc-header">II. FILTRIRANJE</div>
+
                 <div class="doc-block">
-                    <h3>WHERE</h3>
-                    <p>Uslov za pretragu.</p>
+                    <h3>DELETE (Brisanje)</h3>
+                    <p>Briše studenta sa ID-jem 5.</p>
+                    <code>DELETE FROM studenti WHERE id = 5;</code>
+                </div>
+
+                <div class="doc-header">II. FILTRIRANJE I SORTIRANJE</div>
+
+                <div class="doc-block">
+                    <h3>WHERE (Uslov)</h3>
+                    <p>Traži studente samo iz Beograda.</p>
                     <code>SELECT * FROM studenti WHERE grad = 'Beograd';</code>
                 </div>
+
+                <div class="doc-block">
+                    <h3>AND / OR (Logika)</h3>
+                    <p>Kombinovanje više uslova.</p>
+                    <code>SELECT * FROM predmeti WHERE espb > 5 AND naziv = 'Baze Podataka';</code>
+                </div>
+
+                <div class="doc-block">
+                    <h3>ORDER BY (Sortiranje)</h3>
+                    <p>Sortiraj studente po imenu (A-Z).</p>
+                    <code>SELECT * FROM studenti ORDER BY ime ASC;</code>
+                    <p>Sortiraj ocene od najveće ka najmanjoj.</p>
+                    <code>SELECT * FROM ocene ORDER BY ocena DESC;</code>
+                </div>
+
+                <div class="doc-header">III. MATEMATIKA (AGREGACIJA)</div>
+
+                <div class="doc-block">
+                    <h3>COUNT (Brojanje)</h3>
+                    <p>Koliko ukupno ima studenata?</p>
+                    <code>SELECT COUNT(*) FROM studenti;</code>
+                </div>
+
+                <div class="doc-block">
+                    <h3>AVG (Prosek)</h3>
+                    <p>Izračunaj prosečnu ocenu svih studenata.</p>
+                    <code>SELECT AVG(ocena) FROM ocene;</code>
+                </div>
+
+                <div class="doc-block">
+                    <h3>MAX / MIN</h3>
+                    <p>Najveća i najmanja ocena.</p>
+                    <code>SELECT MAX(ocena), MIN(ocena) FROM ocene;</code>
+                </div>
+
+                <div class="doc-header">IV. NAPREDNO (RELACIJE)</div>
+
+                <div class="doc-block">
+                    <h3>JOIN (Spajanje)</h3>
+                    <p>Povezuje studente sa njihovim ocenama (ključni koncept!).</p>
+                    <code>SELECT studenti.ime, ocene.ocena FROM studenti JOIN ocene ON studenti.id = ocene.ucenik_id;</code>
+                </div>
+
+                <div class="doc-block">
+                    <h3>LIKE (Pretraga teksta)</h3>
+                    <p>Pronađi studente čije ime počinje na 'M'.</p>
+                    <code>SELECT * FROM studenti WHERE ime LIKE 'M%';</code>
+                </div>
+
             </div>
         </div>
 
@@ -120,21 +183,80 @@
             <div class="docs-container">
                 <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--success);">
                     <i class="fas fa-car"></i> <strong>PROJEKAT: AUTO PLAC</strong><br>
-                    <span style="font-size: 0.85rem; color: #cbd5e1;">Izgradićemo kompletan sistem za prodaju automobila od nule.</span>
+                    <span style="font-size: 0.85rem; color: #cbd5e1;">Izgradićemo kompletan sistem za prodaju automobila od nule. Ne trebaju ti demo podaci. Ti si arhitekta baze!</span>
                 </div>
+
                 <div class="doc-header">1. KORAK: ARHITEKTURA (CREATE)</div>
                 <div class="doc-block">
-                    <code>CREATE TABLE automobili (
+                    <p><strong>Zadatak:</strong> Otvoriš auto plac. Prvo ti treba "sveska" (tabela) gde ćeš pisati automobile.</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">
+                        Kreiraj tabelu <code>automobili</code> koja ima:<br>
+                        - <code>id</code> (broj)<br>
+                        - <code>marka</code> (tekst)<br>
+                        - <code>model</code> (tekst)<br>
+                        - <code>cena</code> (broj)<br>
+                        - <code>status</code> (tekst - npr. 'Na prodaju')
+                    </p>
+                    <code style="border-left: 3px solid var(--accent); color: #e2e8f0; display: block; white-space: pre-wrap;">
+CREATE TABLE automobili (
     id INTEGER PRIMARY KEY,
     marka TEXT,
     model TEXT,
     cena INTEGER,
     status TEXT
-);</code>
+);
+                    </code>
                 </div>
-                <div class="doc-header">2. KORAK: PUNJENJE (INSERT)</div>
+
+                <div class="doc-header">2. KORAK: PUNJENJE LAGERA (INSERT)</div>
                 <div class="doc-block">
-                    <code>INSERT INTO automobili VALUES (1, 'BMW', 'X5', 15000, 'Na prodaju');</code>
+                    <p><strong>Zadatak:</strong> Stigli su prvi automobili na plac. Ubaci ih u sistem.</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">
+                        Unosimo 3 automobila odjednom. Prepiši ovaj kod pažljivo.
+                    </p>
+                    <code style="border-left: 3px solid var(--accent); color: #e2e8f0; display: block; white-space: pre-wrap;">
+INSERT INTO automobili VALUES 
+(1, 'BMW', 'X5', 15000, 'Na prodaju'),
+(2, 'Audi', 'A4', 8500, 'Na prodaju'),
+(3, 'Fiat', 'Punto', 2000, 'Na prodaju');
+                    </code>
+                    <p style="margin-top:5px; font-size: 0.8rem;"><i>*Proveri unos sa: <code>SELECT * FROM automobili;</code></i></p>
+                </div>
+
+                <div class="doc-header">3. KORAK: UPITI KUPACA (SELECT)</div>
+                <div class="doc-block">
+                    <p><strong>Zadatak:</strong> Došao je kupac i pita: "Imate li nešto jeftinije od 9000 evra?"</p>
+                    <code style="border-left: 3px solid var(--accent); color: #e2e8f0; display: block; white-space: pre-wrap;">
+SELECT * FROM automobili 
+WHERE cena < 9000;
+                    </code>
+                </div>
+
+                <div class="doc-header">4. KORAK: PRODAJA (UPDATE)</div>
+                <div class="doc-block">
+                    <p><strong>Zadatak:</strong> Čestitamo! Prodao si Audi (ID 2). Promeni mu status u 'PRODATO'.</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">
+                        Koristimo UPDATE da izmenimo postojeći podatak.
+                    </p>
+                    <code style="border-left: 3px solid var(--accent); color: #e2e8f0; display: block; white-space: pre-wrap;">
+UPDATE automobili 
+SET status = 'PRODATO' 
+WHERE id = 2;
+                    </code>
+                    <p style="margin-top:5px; font-size: 0.8rem;"><i>*Proveri promenu: <code>SELECT * FROM automobili;</code></i></p>
+                </div>
+
+                <div class="doc-header">5. KORAK: INFLACIJA (ADVANCED UPDATE)</div>
+                <div class="doc-block">
+                    <p><strong>Zadatak:</strong> Cene su skočile. Podigni cenu svim automobilima koji još nisu prodati za 10%.</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">
+                        Matematika u SQL-u: <code>cena * 1.1</code>
+                    </p>
+                    <code style="border-left: 3px solid var(--accent); color: #e2e8f0; display: block; white-space: pre-wrap;">
+UPDATE automobili 
+SET cena = cena * 1.1 
+WHERE status = 'Na prodaju';
+                    </code>
                 </div>
             </div>
         </div>

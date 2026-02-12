@@ -1,0 +1,305 @@
+:root {
+    --bg-dark: #0f172a;
+    --bg-panel: #1e293b;
+    --border: #334155;
+    --accent: #38bdf8;
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --success: #10b981;
+    --error: #ef4444;
+    --code-bg: #020617;
+    --header-height: 50px;
+    --sidebar-width: 350px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* --- MOBILE HEADER --- */
+.mobile-header {
+    display: none;
+    height: var(--header-height);
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    padding: 0 15px;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 20;
+}
+
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* --- SIDEBAR RECONSTRUCTION --- */
+.sidebar {
+    width: var(--sidebar-width);
+    min-width: 320px;
+    background-color: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    overflow-x: hidden; /* Sprečava "curenje" teksta van okvira tokom animacije */
+}
+
+.sidebar-header {
+    padding: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- TABS PORAVNANJE (Fix za ispadanje teksta) --- */
+.sidebar-tabs {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 2px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.75rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.tab-btn i { font-size: 1.1rem; }
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.tab-content {
+    display: none;
+    flex-grow: 1;
+    overflow-y: auto;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Samo jedna optimizovana animacija za ulazak taba */
+.tab-content.active {
+    display: flex;
+    animation: tabFadeIn 0.35s ease-out forwards;
+}
+
+/* --- EXPLORER STYLES --- */
+.schema-container, .docs-container, .missions-container { padding: 15px; }
+.schema-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; display: block; font-weight: 600; }
+.table-list { list-style: none; padding: 0; margin: 0; }
+.table-list li { padding: 12px 10px; font-size: 0.9rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.table-list li:hover { background-color: rgba(255,255,255,0.05); }
+
+/* --- DOCS & CODE --- */
+.doc-block { margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+.doc-block h3 { color: var(--accent); margin: 0 0 8px 0; font-size: 1rem; }
+.doc-block p { color: var(--text-muted); font-size: 0.85rem; margin: 0 0 10px 0; line-height: 1.4; }
+.doc-block code {
+    display: block;
+    background: var(--code-bg);
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: #a5b4fc;
+    border: 1px solid var(--border);
+    margin-bottom: 5px;
+    user-select: text;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.doc-header {
+    background-color: var(--bg-dark);
+    color: var(--accent);
+    padding: 8px 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+}
+
+/* --- CONTROLS --- */
+.controls { padding: 15px; border-top: 1px solid var(--border); background-color: rgba(0,0,0,0.2); margin-top: auto; }
+.file-ops { display: flex; gap: 10px; margin-bottom: 10px; }
+.primary-btn, .secondary-btn { 
+    width: 100%; padding: 12px; border-radius: 6px; font-weight: bold; 
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; 
+}
+.primary-btn { background: var(--accent); color: var(--bg-dark); }
+.secondary-btn { background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main); flex: 1; font-size: 0.85rem; }
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%; 
+    overflow: hidden;
+}
+
+#terminal-container { flex-grow: 1; padding: 5px; background-color: var(--bg-dark); overflow: hidden; }
+
+.status-bar { 
+    height: 35px;
+    background-color: var(--accent); 
+    color: var(--bg-dark); 
+    display: flex; 
+    align-items: center; 
+    padding: 0 10px; 
+    font-size: 0.75rem; 
+    font-weight: bold; 
+    justify-content: space-between; 
+}
+
+/* --- GAMIFICATION --- */
+.badge { background: var(--accent); color: var(--bg-dark); padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }
+.mission-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.mission-status { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 15px; border: 1px solid var(--border); }
+.success-btn { background-color: var(--success); color: white; }
+.level-item { 
+    padding: 10px; margin-bottom: 5px; background: rgba(255,255,255,0.03); 
+    border-radius: 4px; cursor: pointer; font-size: 0.85rem; 
+    display: flex; align-items: center; gap: 10px;
+}
+.level-item.active { border-left: 3px solid var(--accent); background: rgba(56, 189, 248, 0.1); }
+
+/* --- SNIPPET BAR --- */
+.snippet-bar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 10px;
+    background-color: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+    scrollbar-width: none;
+}
+.snippet-bar::-webkit-scrollbar { display: none; }
+
+.snippet-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.snippet-btn.symbol { color: #fbbf24; }
+
+/* --- ANIMACIJE --- */
+@keyframes tabFadeIn {
+    from { opacity: 0; transform: translateX(-15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* Primena slide animacije na snippet bar pri ucitavanju */
+.snippet-bar {
+    animation: slideUp 0.4s ease-out;
+}
+
+/* --- OVERLAY --- */
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 40;
+    display: none; opacity: 0; transition: opacity 0.3s;
+    backdrop-filter: blur(2px);
+}
+.overlay.active { display: block; opacity: 1; }
+
+/* --- RESPONSIVE LOGIC --- */
+@media (min-width: 769px) {
+    body { flex-direction: row; }
+    .main-content { width: calc(100% - var(--sidebar-width)); }
+}
+
+@media (max-width: 768px) {
+    .mobile-header { display: flex; }
+    .sidebar {
+        position: fixed; top: 0; left: 0; height: 100%;
+        width: 85%; max-width: 320px;
+        transform: translateX(-100%);
+    }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-header { display: none; }
+    
+    /* 2x2 Grid za mobilne tabove za prste deteta */
+    .sidebar-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0;
+    }
+    .tab-btn {
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 15px 5px;
+        font-size: 0.85rem;
+    }
+    .tab-btn:nth-child(2n) { border-right: none; }
+    .main-content { width: 100%; height: 100%; }
+}
+
+/* Scrollbar stilovi */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-panel); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

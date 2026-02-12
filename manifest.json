@@ -1,0 +1,16 @@
+{
+  "short_name": "SQLMaster",
+  "name": "SQL Master Learning Terminal",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4248/4248443.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0f172a",
+  "theme_color": "#38bdf8",
+  "display": "standalone",
+  "orientation": "portrait-primary"
+}

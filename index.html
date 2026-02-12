@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Master LEO v2.0</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#38bdf8">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4248/4248443.png">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div style="font-weight:bold; color:var(--accent); display:flex; gap:10px; align-items:center;">
+            <i class="fas fa-database"></i> LEO v2.0
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-terminal"></i> LEO v2.0
+        </div>
+        
+        <div class="sidebar-tabs">
+            <button class="tab-btn active" onclick="switchTab('explorer')">
+                <i class="fas fa-list"></i><span>Baza</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('docs')">
+                <i class="fas fa-book"></i><span>Uputstvo</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('missions')">
+                <i class="fas fa-trophy"></i><span>Misije</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('exercises')">
+                <i class="fas fa-dumbbell"></i><span>Vežbe</span>
+            </button>
+        </div>
+
+        <div id="tab-explorer" class="tab-content active">
+            <div class="schema-container">
+                <span class="schema-title">Tabele u memoriji</span>
+                <ul id="table-list" class="table-list">
+                    <li style="color: #64748b;"><i>Inicijalizacija...</i></li>
+                </ul>
+            </div>
+            
+            <div class="controls">
+                <div class="file-ops">
+                    <button onclick="saveDatabase()" class="secondary-btn" title="Sačuvaj Bazu">
+                        <i class="fas fa-download"></i> Save
+                    </button>
+                    <label class="secondary-btn" title="Učitaj Bazu" style="margin-bottom: 0;">
+                        <i class="fas fa-upload"></i> Load
+                        <input type="file" id="db-upload" onchange="loadDatabase(this)" style="display: none;">
+                    </label>
+                </div>
+                <button id="btn-load-demo" class="primary-btn" style="margin-top: 10px;">
+                    <i class="fas fa-rotate-right"></i> Resetuj / Demo Podaci
+                </button>
+            </div>
+        </div>
+
+        <div id="tab-docs" class="tab-content">
+            <div class="docs-container">
+                <div class="doc-header">I. OSNOVE (CRUD)</div>
+                <div class="doc-block">
+                    <h3>SELECT</h3>
+                    <p>Prikazuje sve kolone iz tabele.</p>
+                    <code>SELECT * FROM studenti;</code>
+                </div>
+                <div class="doc-block">
+                    <h3>INSERT</h3>
+                    <p>Dodavanje novog reda.</p>
+                    <code>INSERT INTO studenti VALUES (1, 'Marko');</code>
+                </div>
+                <div class="doc-block">
+                    <h3>CREATE</h3>
+                    <p>Pravljenje nove tabele.</p>
+                    <code>CREATE TABLE x (id INTEGER, naziv TEXT);</code>
+                </div>
+                <div class="doc-header">II. FILTRIRANJE</div>
+                <div class="doc-block">
+                    <h3>WHERE</h3>
+                    <p>Uslov za pretragu.</p>
+                    <code>SELECT * FROM studenti WHERE grad = 'Beograd';</code>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-missions" class="tab-content">
+            <div class="missions-container">
+                <div class="mission-header">
+                    <h3>Trenutni Zadatak</h3>
+                    <span id="level-badge" class="badge">Level 1</span>
+                </div>
+                <p id="mission-desc" class="mission-text">Učitavanje misija...</p>
+                <div class="mission-status">
+                    Status: <span id="mission-status-text">Na čekanju</span>
+                </div>
+                <button onclick="checkSolution()" class="primary-btn success-btn">
+                    <i class="fas fa-play"></i> Proveri Rešenje
+                </button>
+                <hr class="separator">
+                <div class="level-list" id="level-list"></div>
+            </div>
+        </div>
+
+        <div id="tab-exercises" class="tab-content">
+            <div class="docs-container">
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--success);">
+                    <i class="fas fa-car"></i> <strong>PROJEKAT: AUTO PLAC</strong><br>
+                    <span style="font-size: 0.85rem; color: #cbd5e1;">Izgradićemo kompletan sistem za prodaju automobila od nule.</span>
+                </div>
+                <div class="doc-header">1. KORAK: ARHITEKTURA (CREATE)</div>
+                <div class="doc-block">
+                    <code>CREATE TABLE automobili (
+    id INTEGER PRIMARY KEY,
+    marka TEXT,
+    model TEXT,
+    cena INTEGER,
+    status TEXT
+);</code>
+                </div>
+                <div class="doc-header">2. KORAK: PUNJENJE (INSERT)</div>
+                <div class="doc-block">
+                    <code>INSERT INTO automobili VALUES (1, 'BMW', 'X5', 15000, 'Na prodaju');</code>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div id="terminal-container"></div>
+        
+        <div id="snippet-container" class="snippet-bar"></div>
+        
+        <footer class="status-bar">
+            <span id="status-text"><i class="fas fa-circle-notch fa-spin"></i> Učitavanje...</span>
+            <span id="exec-timer">Ready</span>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    
+    <script src="app.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 350);
+        }
+
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            // 1. Resetuj sadržaje i pokreni animaciju iznova
+            contents.forEach(el => {
+                el.classList.remove('active');
+                el.style.animation = 'none';
+                el.offsetHeight; /* trigger reflow */
+                el.style.animation = null; 
+            });
+            
+            buttons.forEach(el => el.classList.remove('active'));
+
+            // 2. Aktiviraj traženi tab
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if (targetTab) targetTab.classList.add('active');
+
+            // 3. Obeleži aktivno dugme
+            const tabs = ['explorer', 'docs', 'missions', 'exercises'];
+            const index = tabs.indexOf(tabName);
+            if (index !== -1) {
+                buttons[index].classList.add('active');
+            }
+            
+            // 4. Mobilna automatizacija
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        }
+
+        // PWA Registracija
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("PWA: Service Worker Registrovan"));
+        }
+    </script>
+</body>
+</html>
